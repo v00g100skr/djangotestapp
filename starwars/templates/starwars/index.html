@@ -1,0 +1,9 @@
+{% if characters_list %}
+    <ul>
+    {% for c in characters_list %}
+        <li><a href="{% url 'character' c.id %}">{{ c.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No characters are available.</p>
+{% endif %}
