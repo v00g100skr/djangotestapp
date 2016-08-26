@@ -5,11 +5,16 @@
 </form>
 
 {% if characters_list %}
-    <ul>
     {% for c in characters_list %}
-        <li><a href="{% url 'character' c.id %}">{{ c.name }}</a></li>
+        <form action="{% url 'crud' %}" method="post">
+        {% csrf_token %}
+        <input type="submit" name="edit" value="Edit" />
+        <input type="submit" name="delete" value="Delete" />
+        <a href="{% url 'character' c.id %}">{{ c.name }}</a>
+            <input type="hidden" name="exist_char_id" value="{{ c.id }}"/>
+
+        </form>
     {% endfor %}
-    </ul>
 {% else %}
     <p>No characters are available.</p>
 {% endif %}

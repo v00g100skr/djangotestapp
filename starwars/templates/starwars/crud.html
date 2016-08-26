@@ -1,0 +1,27 @@
+{% for m in message %}
+{{ m }}<br>
+{% endfor %}
+<form action="{% url 'crud' %}" method="post" xmlns="http://www.w3.org/1999/html">
+{% csrf_token %}
+    <input type="hidden" name="id" value="{{ char.id }}"/>
+    <input type="hidden" name="action" value="{{ char.action }}"/>
+    <input type="hidden" name="trigger_save" value="1"/>
+    name:</br>
+    <input type="text" name="name" value="{{ char.name }}"/><br>
+    height:</br>
+    <input type="text" name="height" value="{{ char.height }}"/><br>
+    mass:</br>
+    <input type="text" name="mass" value="{{ char.mass }}"/><br>
+    hair_color:</br>
+    <input type="text" name="hair_color" value="{{ char.hair_color }}"/><br>
+    skin_color:</br>
+    <input type="text" name="skin_color" value="{{ char.skin_color }}"/><br>
+    eye_color:</br>
+    <input type="text" name="eye_color" value="{{ char.eye_color }}"/><br>
+    birth_year:</br>
+    <input type="text" name="birth_year" value="{{ char.birth_year }}"/><br>
+    gender:</br>
+    <input type="text" name="gender" value="{{ char.gender }}"/><br>
+
+    <input type="submit" value="Add" />
+</form>

@@ -32,4 +32,5 @@ def get_char(char_id):
 
 
 def get_char_cache_key(name, id):
+    # Cache key may contains characters that will cause errors if used with memcached
     return '%s_%s' % (name, id)
