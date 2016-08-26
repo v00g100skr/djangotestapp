@@ -1,3 +1,6 @@
+{% extends "starwars/base.html" %}
+
+{% block content %}
 {% if requests %}
     {% for r in requests %}
         {{ r.id }}. {{ r.method }} {{ r.path }} {{ r.code }} / {{ r.status }}<br>
@@ -5,3 +8,4 @@
 {% else %}
     <p>No requests are available.</p>
 {% endif %}
+{% endblock %}

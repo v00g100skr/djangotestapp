@@ -1,9 +1,13 @@
+{% extends "starwars/base.html" %}
+
+{% block content %}
 {% if found_characters %}
     <ul>
     {% for char in found_characters %}
-        <li><a href="{% url 'add_from_swapi' char.id %}">{{ char.name }}</a></li>
+        <li><a href="{% url 'add_from_swapi' char.id %}">ADD {{ char.name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
     <p>No characters are available.</p>
 {% endif %}
+{% endblock %}

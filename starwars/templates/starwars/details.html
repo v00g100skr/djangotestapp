@@ -1,3 +1,6 @@
+{% extends "starwars/base.html" %}
+
+{% block content %}
 <ul>
     <li>name: {{ character.name }}</li>
     <li>height: {{ character.height }}</li>
@@ -11,3 +14,4 @@
     <li>pic: <img src="{{ character.pic.url }}"></li>
     {% endif %}
 </ul>
+{% endblock %}

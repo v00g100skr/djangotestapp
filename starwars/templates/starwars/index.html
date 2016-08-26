@@ -1,3 +1,6 @@
+{% extends "starwars/base.html" %}
+
+{% block content %}
 <form action="{% url 'search' %}" method="post">
 {% csrf_token %}
     <input type="text" name="search" size="48"/>
@@ -15,3 +18,4 @@
     <p>No characters are available.</p>
 {% endif %}
 {{ form }}
+{% endblock %}
