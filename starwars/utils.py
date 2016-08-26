@@ -10,8 +10,9 @@ def get_chars():
         chars = {}
         for char in swapi_characters.items:
             char_index = swapi_characters.items.index(char)+1
-            chars[char.name] = char_index
-            char_key = get_char_cache_key(char.name, char_index)
+            char_name = char.name.lower()
+            chars[char_name] = char_index
+            char_key = get_char_cache_key(char_name, char_index)
             cache.set(char_key, char)
         cache.set('chars', chars)
 

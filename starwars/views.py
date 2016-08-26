@@ -1,12 +1,8 @@
-from django.core.cache import cache
 from django.http import Http404
 from django.shortcuts import render
 
-import swapi
-
-
 from .models import Characters
-from .utils import get_char_cache_key, get_chars, get_char
+from .utils import get_chars, get_char
 
 
 def index(request):
@@ -35,7 +31,7 @@ def search(request):
 
     chars = get_chars()
 
-    matching = [s for s in list(chars) if search_string in s]
+    matching = [s for s in list(chars) if search_string.lower() in s]
 
     context = {}
 
@@ -55,7 +51,7 @@ def add_from_swapi(request, character_id):
     character_id = int(character_id)
     char_data = get_char(character_id)
     if not char_data:
-        raise Http404("Character not saved")
+        raise Http404("Character not found")
 
     char = Characters(
         id=character_id,
@@ -70,5 +66,9 @@ def add_from_swapi(request, character_id):
     )
 
     char.save()
+
+    context = {
+        'message': 'added %s' % char_data.name
+    }
 
     return render(request, 'starwars/api_add.html', context)
