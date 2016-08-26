@@ -1,0 +1,5 @@
+<form action="{{ action }}" method="post" xmlns="http://www.w3.org/1999/html">
+{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+</form>

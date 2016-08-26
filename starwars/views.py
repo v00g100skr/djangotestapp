@@ -1,9 +1,11 @@
 import csv
 from django.http import Http404
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from random import randrange
 
+from .forms import CharacterForm, CharacterItemForm
 from .models import Characters, RequestLog
 from .utils import get_chars, get_char
 
@@ -26,6 +28,7 @@ def character(request, character_id):
         }
     except Characters.DoesNotExist:
         raise Http404("Character does not exist")
+
     return render(request, 'starwars/details.html', context)
 
 
@@ -52,6 +55,71 @@ def search(request):
     return render(request, 'starwars/search.html', context)
 
 
+def edit(request, character_id):
+    if request.method == 'POST':
+        form = CharacterForm(request.POST)
+        if form.is_valid():
+            char = Characters(
+                id=character_id,
+                name=request.POST['name'],
+                height=request.POST['height'],
+                mass=request.POST['mass'],
+                hair_color=request.POST['hair_color'],
+                skin_color=request.POST['skin_color'],
+                eye_color=request.POST['eye_color'],
+                birth_year=request.POST['birth_year'],
+                gender=request.POST['gender']
+            )
+            char.save()
+            return redirect('character', character_id=character_id)
+
+    else:
+        char = Characters.objects.get(pk=character_id)
+        form = CharacterItemForm(instance=char)
+
+    context = {
+        'form': form,
+        'action': reverse('edit', args=(character_id,))
+    }
+
+    return render(request, 'starwars/form.html', context)
+
+
+def delete(request, character_id):
+    Characters.objects.get(pk=character_id).delete()
+    return redirect('index')
+
+
+def add(request):
+    if request.method == 'POST':
+        form = CharacterForm(request.POST)
+        if form.is_valid():
+            char_id = randrange(10, 100000)
+            char = Characters(
+                id=char_id,
+                name = request.POST['name'],
+                height = request.POST['height'],
+                mass = request.POST['mass'],
+                hair_color = request.POST['hair_color'],
+                skin_color = request.POST['skin_color'],
+                eye_color = request.POST['eye_color'],
+                birth_year = request.POST['birth_year'],
+                gender = request.POST['gender']
+            )
+            char.save()
+            return redirect('character', character_id=id)
+
+    else:
+        form = CharacterForm()
+
+    context = {
+        'form': form,
+        'action': reverse('add')
+    }
+
+    return render(request, 'starwars/form.html', context)
+
+
 def add_from_swapi(request, character_id):
     character_id = int(character_id)
     char_data = get_char(character_id)
@@ -74,71 +142,6 @@ def add_from_swapi(request, character_id):
 
     return redirect('index')
 
-
-def crud(request):
-    id = request.POST.get('exist_char_id')
-    trigger_save = False
-    trigger_delete = request.POST.get('delete')
-    message = []
-
-    if trigger_delete:
-        Characters.objects.get(pk=id).delete()
-        return redirect('index')
-
-    if id:
-        action = 'update'
-        char = Characters.objects.get(pk=id)
-        char.action = action
-
-    else:
-        action = request.POST.get('action')
-        if not action:
-            action = 'add'
-        id = request.POST.get('id')
-        if not id:
-            id = randrange(10, 100000)
-        name = request.POST.get('name', '')
-        height = request.POST.get('height', 'unknown')
-        mass = request.POST.get('mass', 'unknown')
-        hair_color = request.POST.get('hair_color', 'unknown')
-        skin_color = request.POST.get('skin_color', 'unknown')
-        eye_color = request.POST.get('eye_color', 'unknown')
-        birth_year = request.POST.get('birth_year', 'unknown')
-        gender = request.POST.get('gender', 'n/a')
-
-        trigger_save = request.POST.get('trigger_save')
-
-        char = Characters(
-            id=id,
-            name=name,
-            height=height,
-            mass=mass,
-            hair_color=hair_color,
-            skin_color=skin_color,
-            eye_color=eye_color,
-            birth_year=birth_year,
-            gender=gender
-        )
-
-    if trigger_save and len(char.name) > 0:
-        char.save()
-        return redirect('character', character_id=id)
-
-    if action == 'update':
-        message.append('update character %s' % char.name)
-    if action == 'add':
-        message.append('add character')
-
-    if len(char.name) == 0:
-        message.append('character name is needed')
-
-    context = {
-        'message': message,
-        'char': char,
-        'action': action
-    }
-
-    return render(request, 'starwars/crud.html', context)
 
 def request_log(request):
     requests = RequestLog.objects.order_by('id')[:10]
