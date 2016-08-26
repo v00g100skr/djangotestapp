@@ -7,4 +7,7 @@
     <li>eye_color: {{ character.eye_color }}</li>
     <li>birth_year: {{ character.birth_year }}</li>
     <li>gender: {{ character.gender }}</li>
+    {% if character.pic.url %}
+    <li>pic: <img src="{{ character.pic.url }}"></li>
+    {% endif %}
 </ul>

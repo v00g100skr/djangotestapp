@@ -1,4 +1,4 @@
-<form action="{{ action }}" method="post" xmlns="http://www.w3.org/1999/html">
+<form action="{{ action }}" method="post" enctype="multipart/form-data" mlns="http://www.w3.org/1999/html">
 {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Submit" />

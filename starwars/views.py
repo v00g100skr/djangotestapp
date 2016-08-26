@@ -57,7 +57,7 @@ def search(request):
 
 def edit(request, character_id):
     if request.method == 'POST':
-        form = CharacterForm(request.POST)
+        form = CharacterForm(request.POST, request.FILES)
         if form.is_valid():
             char = Characters(
                 id=character_id,
@@ -70,6 +70,8 @@ def edit(request, character_id):
                 birth_year=request.POST['birth_year'],
                 gender=request.POST['gender']
             )
+            if request.FILES.get('pic'):
+                char.pic = request.FILES['pic']
             char.save()
             return redirect('character', character_id=character_id)
 
@@ -92,7 +94,7 @@ def delete(request, character_id):
 
 def add(request):
     if request.method == 'POST':
-        form = CharacterForm(request.POST)
+        form = CharacterForm(request.POST, request.FILES)
         if form.is_valid():
             char_id = randrange(10, 100000)
             char = Characters(
@@ -106,8 +108,10 @@ def add(request):
                 birth_year = request.POST['birth_year'],
                 gender = request.POST['gender']
             )
+            if request.FILES.get('pic'):
+                char.pic = request.FILES['pic']
             char.save()
-            return redirect('character', character_id=id)
+            return redirect('character', character_id=char_id)
 
     else:
         form = CharacterForm()

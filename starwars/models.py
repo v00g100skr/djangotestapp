@@ -12,6 +12,7 @@ class Characters(models.Model):
     eye_color = models.CharField(max_length=16)
     birth_year = models.CharField(max_length=8)
     gender = models.CharField(max_length=8)
+    pic = models.FileField(upload_to='', default='no-img.jpg')
 
 
 class RequestLog(models.Model):
