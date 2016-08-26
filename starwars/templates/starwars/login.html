@@ -1,0 +1,14 @@
+{% extends "starwars/base.html" %}
+
+{% block content %}
+{% if message %}
+    {{ message }}<br>
+{% endif %}
+<form action="{% url 'login' %}" method="post" mlns="http://www.w3.org/1999/html">
+{% csrf_token %}
+    <input type="hidden" name="redirect" value="{{ redirect }}"/>
+    login : <input type="text" name="username"/>
+    password: <input type="password" name="password"/>
+    <input type="submit" value="Submit" />
+</form>
+{% endblock %}

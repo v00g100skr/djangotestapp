@@ -1,7 +1,10 @@
 import csv
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
+
 
 from random import randrange
 
@@ -10,16 +13,18 @@ from .models import Characters, RequestLog
 from .utils import get_chars, get_char
 
 
-def index(request, message=None):
+@login_required(login_url='/starwars/login/')
+def index(request):
+
     characters_list = Characters.objects.order_by('name')
     context = {
-        'characters_list': characters_list,
-        'message': message
+        'characters_list': characters_list
     }
 
     return render(request, 'starwars/index.html', context)
 
 
+@login_required(login_url='/starwars/login/')
 def character(request, character_id):
     try:
         character = Characters.objects.get(pk=character_id)
@@ -32,6 +37,7 @@ def character(request, character_id):
     return render(request, 'starwars/details.html', context)
 
 
+@login_required(login_url='/starwars/login/')
 def search(request):
     search_string = request.POST.get('search')
     if not search_string:
@@ -55,6 +61,7 @@ def search(request):
     return render(request, 'starwars/search.html', context)
 
 
+@login_required(login_url='/starwars/login/')
 def edit(request, character_id):
     if request.method == 'POST':
         form = CharacterForm(request.POST, request.FILES)
@@ -87,11 +94,13 @@ def edit(request, character_id):
     return render(request, 'starwars/form.html', context)
 
 
+@login_required(login_url='/starwars/login/')
 def delete(request, character_id):
     Characters.objects.get(pk=character_id).delete()
     return redirect('index')
 
 
+@login_required(login_url='/starwars/login/')
 def add(request):
     if request.method == 'POST':
         form = CharacterForm(request.POST, request.FILES)
@@ -153,3 +162,30 @@ def request_log(request):
         'requests': requests
     }
     return render(request, 'starwars/request_log.html', context)
+
+
+def login_form(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect(request.POST['redirect'])
+        else:
+            context = {
+                'message': 'LOGIN INCORRECT',
+                'redirect': request.POST['redirect']
+            }
+            return render(request, 'starwars/login.html', context)
+    else:
+        context = {
+            'redirect': request.GET['next']
+        }
+
+    return render(request, 'starwars/login.html', context)
+
+
+def logout_form(request):
+    logout(request)
+    return redirect('index')
