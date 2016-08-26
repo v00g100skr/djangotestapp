@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 
 from random import randrange
 
-from .models import Characters
+from .models import Characters, RequestLog
 from .utils import get_chars, get_char
 
 
@@ -137,3 +137,10 @@ def crud(request):
     }
 
     return render(request, 'starwars/crud.html', context)
+
+def request_log(request):
+    requests = RequestLog.objects.order_by('id')[:10]
+    context = {
+        'requests': requests
+    }
+    return render(request, 'starwars/request_log.html', context)

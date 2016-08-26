@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'starwars.middleware.request_log_middleware.RequestLogMidleware'
 ]
 
 ROOT_URLCONF = 'djangotest.urls'

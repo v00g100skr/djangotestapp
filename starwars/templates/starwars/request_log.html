@@ -1,0 +1,7 @@
+{% if requests %}
+    {% for r in requests %}
+        {{ r.id }}. {{ r.method }} {{ r.path }} {{ r.code }} / {{ r.status }}<br>
+    {% endfor %}
+{% else %}
+    <p>No requests are available.</p>
+{% endif %}
