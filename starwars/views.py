@@ -1,3 +1,4 @@
+import csv
 from django.http import Http404
 from django.shortcuts import render, redirect
 
@@ -13,6 +14,7 @@ def index(request, message=None):
         'characters_list': characters_list,
         'message': message
     }
+
     return render(request, 'starwars/index.html', context)
 
 
