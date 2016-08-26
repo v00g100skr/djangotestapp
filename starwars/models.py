@@ -1,3 +1,5 @@
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.db import models
 
 
@@ -18,3 +20,31 @@ class RequestLog(models.Model):
     path = models.CharField(max_length=32)
     status = models.CharField(max_length=8)
     code = models.IntegerField()
+
+
+class CharactersLog(models.Model):
+    action = models.CharField(max_length=6)
+    character_id = models.IntegerField()
+
+
+@receiver(post_save, sender=Characters)
+def characters_post_save(sender, **kwargs):
+    action = 'update'
+
+    if kwargs['created']:
+        action = 'create'
+
+    data = CharactersLog(
+        action=action,
+        character_id=kwargs['instance'].id
+    )
+    data.save()
+
+
+@receiver(post_delete, sender=Characters)
+def characters_post_delete(sender, **kwargs):
+    data = CharactersLog(
+        action='delete',
+        character_id=kwargs['instance'].id
+    )
+    data.save()
