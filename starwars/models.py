@@ -1,6 +1,7 @@
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.db import models
+from django.utils import timezone
 
 
 class Characters(models.Model):
@@ -21,11 +22,13 @@ class RequestLog(models.Model):
     path = models.CharField(max_length=32)
     status = models.CharField(max_length=8)
     code = models.IntegerField()
+    date = models.DateTimeField(default=timezone.now())
 
 
 class CharactersLog(models.Model):
     action = models.CharField(max_length=6)
     character_id = models.IntegerField()
+    date = models.DateTimeField(default=timezone.now())
 
 
 @receiver(post_save, sender=Characters)
